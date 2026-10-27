@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NYC Shelter Capacity Tracker</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      background: #f5f7fa;
+      color: #172033;
+    }
+    h1 { line-height: 1.2; }
+    .notice {
+      background: #fff3cd;
+      padding: 14px;
+      border-radius: 8px;
+    }
+    .tabs { display: flex; gap: 8px; margin: 20px 0; }
+    button {
+      padding: 12px;
+      border: 0;
+      border-radius: 7px;
+      background: #173b67;
+      color: white;
+      font-size: 1rem;
+    }
+    button[aria-pressed="true"] { background: #087f5b; }
+    .shelter {
+      background: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 12px 0;
+      box-shadow: 0 1px 4px #0001;
+    }
+    a { color: #145da0; }
+    .unknown { font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>NYC Shelter Capacity Tracker</h1>
+  <p>Information for single adults seeking shelter in New York City.</p>
+
+  <div class="notice">
+    <strong>Important:</strong> Available beds are currently
+    unknown unless confirmed by a reliable, facility-specific source.
+    Citywide shelter counts do not establish vacancies at an individual
+    facility. Call before traveling.
+  </div>
+
+  <div class="tabs" aria-label="Shelter category">
+    <button id="menButton" aria-pressed="true"
+      onclick="showShelters('men')">Single men</button>
+    <button id="womenButton" aria-pressed="false"
+      onclick="showShelters('women')">Single women</button>
+  </div>
+
+  <p id="category"></p>
+  <div id="shelters"></div>
+
+  <h2>Official information</h2>
+  <ul>
+    <li><a href="https://portal.311.nyc.gov/article/?kanumber=KA-02501">
+      NYC 311 shelter information</a></li>
+    <li><a href="https://home4.nyc.gov/site/dhs/shelter/singleadults/single-adults-applying.page">
+      NYC DHS: Applying for shelter</a></li>
+    <li><a href="https://data.cityofnewyork.us/Social-Services/DHS-Daily-Report/k46n-sa2m">
+      NYC DHS Daily Report</a></li>
+  </ul>
+
+  <script>
+    const data = {
+      men: [
+        {
+          name: "Single Adult Men's Intake Center",
+          address: "8 East 3rd Street, Manhattan, NY",
+          hours: "24/7 — verify before traveling",
+          phone: "Confirm through NYC 311",
+          capacity: "Unknown",
+          source: "https://portal.311.nyc.gov/article/?kanumber=KA-02501"
+        }
+      ],
+      women: [
+        {
+          name: "Franklin Shelter / Franklin Women's Intake",
+          address: "1122 Franklin Avenue, Bronx, NY",
+          hours: "24/7 — verify before traveling",
+          phone: "(929) 281-2330",
+          capacity: "Unknown",
+          source: "https://portal.311.nyc.gov/article/?kanumber=KA-02501"
+        },
+        {
+          name: "HELP Women's Center",
+          address: "114 Snediker Avenue, Brooklyn, NY",
+          hours: "24/7 — verify before traveling",
+          phone: "(718) 483-7700",
+          capacity: "Unknown",
+          source: "https://portal.311.nyc.gov/article/?kanumber=KA-02501"
+        }
+      ]
+    };
+
+    function showShelters(category) {
+      document.getElementById("menButton")
+        .setAttribute("aria-pressed", category === "men");
+      document.getElementById("womenButton")
+        .setAttribute("aria-pressed", category === "women");
+
+      document.getElementById("category").textContent =
+        category === "men" ? "Single adult men's intake" :
+        "Single adult women's intake";
+
+      document.getElementById("shelters").innerHTML =
+        data[category].map(s => `
+          <section class="shelter">
+            <h2>${s.name}</h2>
+            <p><strong>Address:</strong> ${s.address}</p>
+            <p><strong>Intake hours:</strong> ${s.hours}</p>
+            <p><strong>Phone:</strong> ${s.phone}</p>
+            <p><strong>Available beds:</strong>
+              <span class="unknown">${s.capacity}</span></p>
+            <p><a href="${s.source}" target="_blank"
+              rel="noopener">Check official source</a></p>
+          </section>
+        `).join("");
+    }
+
+    showShelters("men");
+  </script>
+</body>
+</html>
